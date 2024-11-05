@@ -2,6 +2,7 @@ package com.trim.domain.member.entity;
 
 import com.trim.domain.question.entity.Question;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +12,7 @@ import java.util.List;
 @Entity
 @Getter
 @Table(name = "member")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
 
     @Id
