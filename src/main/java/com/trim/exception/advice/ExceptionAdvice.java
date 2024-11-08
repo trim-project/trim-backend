@@ -1,5 +1,6 @@
 package com.trim.exception.advice;
 
+import com.trim.exception.object.general.GeneralException;
 import com.trim.exception.payload.code.ErrorStatus;
 import com.trim.exception.payload.code.Reason;
 import com.trim.exception.payload.dto.ApiResponseDto;
