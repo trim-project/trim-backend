@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Table(name = "tag", indexes = {
+        @Index(name = "idx_tag_name", columnList = "name")
+})
 public class Tag {
 
     private static final int MAX_TAG_LENGTH = 15;
