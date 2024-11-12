@@ -27,9 +27,9 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         configureCorsAndSecurity(httpSecurity);
         configureAuth(httpSecurity);
-        configureOAuth2(httpSecurity);
-        configureExceptionHandling(httpSecurity);
-        addFilter(httpSecurity);
+//        configureOAuth2(httpSecurity);        //소셜 로그인 구현 이후 작성
+//        configureExceptionHandling(httpSecurity);     //소셜 로그인 구현 이후 작성
+//        addFilter(httpSecurity);
 
         return httpSecurity.build();
     }
