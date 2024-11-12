@@ -1,5 +1,6 @@
 package com.trim.domain.member.entity;
 
+import com.trim.domain.auditing.entity.BaseTimeEntity;
 import com.trim.domain.question.entity.Question;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -13,7 +14,7 @@ import java.util.List;
 @Getter
 @Table(name = "member")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member {
+public class Member extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,17 +32,5 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<Question> questionList = new ArrayList<>();
 
-//    @OneToMany(mappedBy = "member")
-//    private List<Scrap> scrapList = new ArrayList<>();
-
-//    @OneToMany(mappedBy = "member")
-//    private List<AnswerLike> answerLikeList = new ArrayList<>();
-
-//    @OneToMany(mappedBy = "member")
-//    private List<Badge> badgeList = new ArrayList<>();
-
-//    @OneToOne(cascade = CascadeType.PERSIST)
-//    @JoinColumn(name = "avatar_id")
-//    private Avatar avatar;
 
 }

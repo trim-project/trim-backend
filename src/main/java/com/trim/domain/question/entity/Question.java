@@ -1,5 +1,6 @@
 package com.trim.domain.question.entity;
 
+import com.trim.domain.auditing.entity.BaseTimeEntity;
 import com.trim.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 @Getter
 @NoArgsConstructor
 @Table(name = "question")
-public class Question {
+public class Question extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "question_id")
@@ -22,6 +23,7 @@ public class Question {
     @JoinColumn(name = "writer_id")
     private Member writer;
 
+    @Column(nullable = false)
     private String title;
 
     @Lob
