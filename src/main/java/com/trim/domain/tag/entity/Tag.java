@@ -1,5 +1,6 @@
 package com.trim.domain.tag.entity;
 
+import com.trim.domain.auditing.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "tag", indexes = {
         @Index(name = "idx_tag_name", columnList = "name")
 })
-public class Tag {
+public class Tag extends BaseTimeEntity {
 
     private static final int MAX_TAG_LENGTH = 15;
 
