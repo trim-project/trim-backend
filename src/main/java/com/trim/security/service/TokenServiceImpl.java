@@ -1,13 +1,36 @@
 package com.trim.security.service;
 
 import com.trim.security.dto.JwtToken;
+import io.jsonwebtoken.io.Decoder;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+
+import java.security.Key;
+import java.util.Base64;
 
 @Slf4j
 @Service
 public class TokenServiceImpl implements TokenService{
+    private final Key key;      //security yml 파일 생성 후 app.jwt.secret에 값 넣어주기(보안을 위해 따로 연락주세요)
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final RedisService redisService;
+
+    public TokenServiceImpl(@Value("${app.jwt.secret}") String key,
+                            AuthenticationManagerBuilder authenticationManagerBuilder,
+                            RedisService redisService,
+                            MemberQueryService memberQueryService) {
+        byte[] keyBytes = Decoders.BASE64.decode(key);
+        this.key = Keys.hmacShaKeyFor(keyBytes);
+        this.authenticationManagerBuilder = authenticationManagerBuilder;
+//        this.redisService = redisService;
+//        this.memberQueryService = memberQueryService;
+    }
+
     @Override
     public JwtToken login(String kakaoEmail) {
         return null;
