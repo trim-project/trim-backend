@@ -3,21 +3,18 @@ package com.trim.domain.member.entity;
 import com.trim.domain.auditing.entity.BaseTimeEntity;
 import com.trim.domain.question.entity.Question;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Getter
+@Builder
 @Table(name = "member")
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member implements UserDetails {
 
@@ -29,6 +26,7 @@ public class Member implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    //TODO 삭제 후 OAuthInfo(Embeddable) 생성 후 교체
     @Column(unique = true)
     private String username;
 
@@ -45,6 +43,13 @@ public class Member implements UserDetails {
     @Override
     public String getPassword() {
         return null;        //해당 항목 없음
+    }
+
+    @PrePersist
+    public void generateUsername() {
+        if (this.username == null || this.username.isEmpty()) {
+            this.username = UUID.randomUUID().toString();
+        }
     }
 
 //    @OneToMany(mappedBy = "member")
