@@ -1,7 +1,8 @@
-package com.trim.domain.answer.entity;
+package com.trim.domain.questionComment.entity;
 
 import com.trim.domain.auditing.entity.BaseTimeEntity;
 import com.trim.domain.member.entity.Member;
+import com.trim.domain.question.entity.Question;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Answer extends BaseTimeEntity {
+public class QuestionComment extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,5 +27,8 @@ public class Answer extends BaseTimeEntity {
     @JoinColumn(name = "writer_id")
     private Member writer;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "question_comment_id")
+    private Question question;
 
 }
