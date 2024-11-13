@@ -4,7 +4,7 @@ import com.trim.security.dto.JwtToken;
 import org.springframework.security.core.Authentication;
 
 public interface TokenService {
-    JwtToken login(String kakaoEmail);
+    JwtToken login(String username);
     JwtToken issueTokens(String refreshToken);
 
     JwtToken generateToken(Authentication authentication);
