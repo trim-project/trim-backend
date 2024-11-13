@@ -17,8 +17,15 @@ public enum ErrorStatus implements BaseCode{
     _UNAUTHORIZED(UNAUTHORIZED, 4001, "로그인이 필요합니다."),
     _FORBIDDEN(FORBIDDEN, 4002, "금지된 요청입니다."),
 
+    //auth error(4050 ~ 4099)
+    AUTH_INVALID_REFRESH_TOKEN(UNAUTHORIZED, 4050, "유효하지 않은 리프레시 토큰입니다."),
+    AUTH_INVALID_TOKEN(UNAUTHORIZED, 4051, "유효하지 않은 액세스 토큰입니다"),
+    AUTH_TOKEN_HAS_EXPIRED(UNAUTHORIZED, 4052, "토큰의 유효기간이 만료되었습니다"),
+    AUTH_TOKEN_IS_UNSUPPORTED(UNAUTHORIZED,4053, "토큰 형식이 jwt와는 다른 형식입니다."),
+    AUTH_IS_NULL(UNAUTHORIZED, 4054, "토큰이 null입니다"),
+
     //member error(4100 ~ 4149)
-    MEMBER_NOT_FOUND(NOT_FOUND, 4100,"찾을 수 없는 유저 정보입니다." );
+    MEMBER_NOT_FOUND(NOT_FOUND, 4100,"찾을 수 없는 유저 정보입니다.");
 
 
     private final HttpStatus httpStatus;
