@@ -116,7 +116,7 @@ public class TokenServiceImpl implements TokenService{
     }
 
     @Override
-    public Authentication getAuthentication(String accessToken) {           //TODO make annotation
+    public Authentication getAuthentication(String accessToken) {           //TODO use in filter and annotation
         // Jwt 토큰 복호화
         Claims claims = parseClaims(accessToken);
 
