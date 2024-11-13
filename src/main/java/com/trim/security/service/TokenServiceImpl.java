@@ -2,12 +2,11 @@ package com.trim.security.service;
 
 import com.trim.domain.member.entity.Member;
 import com.trim.domain.member.service.MemberService;
+import com.trim.exception.object.general.GeneralException;
+import com.trim.exception.payload.code.ErrorStatus;
 import com.trim.infra.service.RedisService;
 import com.trim.security.dto.JwtToken;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoder;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -59,7 +58,25 @@ public class TokenServiceImpl implements TokenService{
 
     @Override
     public JwtToken issueTokens(String refreshToken) {
-        return null;
+        // Refresh Token 유효성 검사
+        if (!validateToken(refreshToken) || !existsRefreshToken(refreshToken)) {
+            throw new GeneralException(ErrorStatus.AUTH_INVALID_REFRESH_TOKEN);
+        }
+
+        // 이전 리프레시 토큰 삭제
+        redisService.deleteToken(refreshToken);
+
+        // 새로운 Authentication 객체 생성
+        Claims claims = parseClaims(refreshToken);
+        String username = claims.getSubject();
+        Member member = memberService.getMemberInfoByUsername(username);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(member, "",
+                member.getAuthorities());
+
+        // 새 토큰 생성
+        JwtToken jwtToken = generateToken(authentication);
+
+        return jwtToken;
     }
 
     @Override
@@ -121,17 +138,38 @@ public class TokenServiceImpl implements TokenService{
 
     @Override
     public boolean validateToken(String token) {
-        return false;
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token);
+            return true;
+            //TODO GeneralException -> filter에서만 사용되는 exception으로 교체(현재는 서블렛단에서 처리되는 exception)
+        } catch (SecurityException | MalformedJwtException e) {
+            log.info("Invalid JWT Token", e);
+            throw new GeneralException(ErrorStatus.AUTH_INVALID_TOKEN);
+        } catch (ExpiredJwtException e) {
+            log.info("Expired JWT Token", e);
+            throw new GeneralException(ErrorStatus.AUTH_TOKEN_HAS_EXPIRED);
+        } catch (UnsupportedJwtException e) {
+            log.info("Unsupported JWT Token", e);
+            throw new GeneralException(ErrorStatus.AUTH_TOKEN_IS_UNSUPPORTED);
+        } catch (IllegalArgumentException e) {
+            log.info("JWT claims string is empty.", e);
+            throw new GeneralException(ErrorStatus.AUTH_IS_NULL);
+        }
     }
 
     @Override
     public boolean logout(String refreshToken) {
-        return false;
+        redisService.deleteToken(refreshToken);
+        return true;
     }
 
     @Override
     public boolean existsRefreshToken(String refreshToken) {
-        return false;
+        redisService.deleteToken(refreshToken);
+        return true;
     }
 
     private Claims parseClaims(String accessToken) {
