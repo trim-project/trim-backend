@@ -32,7 +32,7 @@ public class Member implements UserDetails {
 
     private String nickname;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "writer")
     private List<Question> questionList = new ArrayList<>();
 
     @Override
