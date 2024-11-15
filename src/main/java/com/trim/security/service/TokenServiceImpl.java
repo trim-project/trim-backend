@@ -2,13 +2,11 @@ package com.trim.security.service;
 
 import com.trim.domain.member.entity.Member;
 import com.trim.domain.member.service.MemberQueryService;
-import com.trim.domain.member.service.MemberService;
 import com.trim.exception.object.general.GeneralException;
 import com.trim.exception.payload.code.ErrorStatus;
 import com.trim.infra.service.RedisService;
 import com.trim.security.dto.JwtToken;
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Decoder;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -35,23 +32,22 @@ public class TokenServiceImpl implements TokenService{
     private final Key key;      //security yml 파일 생성 후 app.jwt.secret에 값 넣어주기(보안을 위해 따로 연락주세요)
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final RedisService redisService;
-    private final MemberQueryService memberService;
+    private final MemberQueryService memberQueryService;
 
     public TokenServiceImpl(@Value("${app.jwt.secret}") String key,
                             AuthenticationManagerBuilder authenticationManagerBuilder,
                             RedisService redisService,
-                            MemberQueryService memberService) {
-        log.info("key = {}", key);
+                            MemberQueryService memberQueryService) {
         byte[] keyBytes = Decoders.BASE64.decode(key);
         this.key = Keys.hmacShaKeyFor(keyBytes);
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.redisService = redisService;
-        this.memberService = memberService;
+        this.memberQueryService = memberQueryService;
     }
 
     @Override
     public JwtToken login(Long memberId) {        //TODO 나중에 사용 x -> only use social
-        Member member = memberService.getMemberInfoById(memberId);
+        Member member = memberQueryService.getMemberInfoById(memberId);
         Authentication authentication = new UsernamePasswordAuthenticationToken(member.getUsername(), "",
                 member.getAuthorities());
         JwtToken jwtToken = generateToken(authentication);
@@ -71,7 +67,7 @@ public class TokenServiceImpl implements TokenService{
         // 새로운 Authentication 객체 생성
         Claims claims = parseClaims(refreshToken);
         String username = claims.getSubject();
-        Member member = memberService.getMemberInfoByUsername(username);
+        Member member = memberQueryService.getMemberInfoByUsername(username);
         Authentication authentication = new UsernamePasswordAuthenticationToken(member, "",
                 member.getAuthorities());
 
