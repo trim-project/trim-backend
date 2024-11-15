@@ -4,4 +4,6 @@ import com.trim.domain.member.entity.Member;
 
 public interface MemberQueryService {
     Member getMemberInfoByUsername(String username);
+
+    Member getMemberInfoById(Long memberId);
 }

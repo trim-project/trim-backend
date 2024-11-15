@@ -1,6 +1,7 @@
 package com.trim.security.service;
 
 import com.trim.domain.member.entity.Member;
+import com.trim.domain.member.service.MemberQueryService;
 import com.trim.domain.member.service.MemberService;
 import com.trim.exception.object.general.GeneralException;
 import com.trim.exception.payload.code.ErrorStatus;
@@ -34,12 +35,13 @@ public class TokenServiceImpl implements TokenService{
     private final Key key;      //security yml 파일 생성 후 app.jwt.secret에 값 넣어주기(보안을 위해 따로 연락주세요)
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final RedisService redisService;
-    private final MemberService memberService;
+    private final MemberQueryService memberService;
 
     public TokenServiceImpl(@Value("${app.jwt.secret}") String key,
                             AuthenticationManagerBuilder authenticationManagerBuilder,
                             RedisService redisService,
-                            MemberService memberService) {
+                            MemberQueryService memberService) {
+        log.info("key = {}", key);
         byte[] keyBytes = Decoders.BASE64.decode(key);
         this.key = Keys.hmacShaKeyFor(keyBytes);
         this.authenticationManagerBuilder = authenticationManagerBuilder;
@@ -48,8 +50,8 @@ public class TokenServiceImpl implements TokenService{
     }
 
     @Override
-    public JwtToken login(String username) {        //TODO 나중에 사용 x -> only use social
-        Member member = memberService.getMemberInfoByUsername(username);
+    public JwtToken login(Long memberId) {        //TODO 나중에 사용 x -> only use social
+        Member member = memberService.getMemberInfoById(memberId);
         Authentication authentication = new UsernamePasswordAuthenticationToken(member.getUsername(), "",
                 member.getAuthorities());
         JwtToken jwtToken = generateToken(authentication);

@@ -18,4 +18,10 @@ public class MemberQueryServiceImpl implements MemberQueryService{
         return memberRepository.findByUsername(username)
                 .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
     }
+
+    @Override
+    public Member getMemberInfoById(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND));
+    }
 }
