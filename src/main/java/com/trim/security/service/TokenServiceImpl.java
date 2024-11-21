@@ -33,6 +33,8 @@ public class TokenServiceImpl implements TokenService{
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final RedisService redisService;
     private final MemberQueryService memberQueryService;
+    private final static int ACCESS_TOKEN_EXPIRATION_TIME = 1800000;
+    private final static int REFRESH_TOKEN_EXPIRATION_TIME = 604800000;
 
     public TokenServiceImpl(@Value("${app.jwt.secret}") String key,
                             AuthenticationManagerBuilder authenticationManagerBuilder,
@@ -87,7 +89,7 @@ public class TokenServiceImpl implements TokenService{
         long now = (new Date()).getTime();
 
         // Access Token 생성
-        Date accessTokenExpiresIn = new Date(now + 1800000);   // 30분
+        Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRATION_TIME);   // 30분
         log.info("date = {}", accessTokenExpiresIn);
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
@@ -99,7 +101,7 @@ public class TokenServiceImpl implements TokenService{
         // Refresh Token 생성
         String refreshToken = Jwts.builder()
                 .setSubject(authentication.getName())
-                .setExpiration(new Date(now + 604800000))    // 7일
+                .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRATION_TIME))    // 7일
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
