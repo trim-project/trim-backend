@@ -16,7 +16,7 @@ import java.util.*;
 @Table(name = "member")
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member implements UserDetails {
+public class Member extends BaseTimeEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,8 +26,7 @@ public class Member implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    //TODO 삭제 후 OAuthInfo(Embeddable) 생성 후 교체
-    @Column(unique = true)
+     @Column(unique = true)
     private String username;
 
     private String nickname;
