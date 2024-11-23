@@ -1,31 +1,32 @@
 package com.trim.global.auth.utils;
 
-import com.trim.global.auth.Provider;
+import com.trim.domain.member.entity.SocialType;
 import com.trim.global.auth.dto.GoogleUserInfo;
 import com.trim.global.auth.dto.KakaoUserInfo;
 import com.trim.global.auth.dto.NaverUserInfo;
+import com.trim.global.auth.dto.OAuth2UserInfo;
 
 import java.util.Map;
 
 public class OAuth2Utils {
 
     // registrationId에 따른 Provider 추출
-    public static Provider getProvider(String registrationId){
+    public static SocialType getSocialType(String registrationId){
 
         if(registrationId.equals("naver")){
-            return Provider.NAVER;
+            return SocialType.NAVER;
         }
         else if(registrationId.equals("google")){
-            return Provider.GOOGLE;
+            return SocialType.GOOGLE;
         }
         else if(registrationId.equals("kakao")){
-            return Provider.KAKAO;
+            return SocialType.KAKAO;
         }
         return null;
     }
 
-    public static Object getObject(Provider provider, Map<String, Object> attributes){
-        switch (provider){
+    public static OAuth2UserInfo getOAuth2UserInfo(SocialType socialType, Map<String, Object> attributes){
+        switch (socialType){
             case NAVER:
                 return new NaverUserInfo(attributes);
             case GOOGLE:
