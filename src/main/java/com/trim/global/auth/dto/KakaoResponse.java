@@ -6,7 +6,7 @@ public class KakaoResponse implements OAuth2Response{
     private final Map<String, Object> attribute;
     private final Map<String, Object> account;
 
-    public KakaoResponse(Map<String, Object> attribute, Map<String, Object> account) {
+    public KakaoResponse(Map<String, Object> attribute) {
         this.attribute = attribute;
         this.account = (Map<String, Object>) attribute.get("kakao_account");
     }
