@@ -43,6 +43,23 @@ spring:
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
             client-authentication-method: client_secret_post
 
+        provider:
+          google:
+            authorization-uri: "서비스 로그인 창 주소"
+            token-uri: "토큰 발급 서버 주소"
+            user-info-uri: "사용자 정보 획득 주소"
+            user-name-attribute: "응답 데이터 변수"
+          naver:
+            authorization-uri: "서비스 로그인 창 주소"
+            token-uri: "토큰 발급 서버 주소"
+            user-info-uri: "사용자 정보 획득 주소"
+            user-name-attribute: "응답 데이터 변수"
+          kakao:
+            authorization-uri: "서비스 로그인 창 주소"
+            token-uri: "토큰 발급 서버 주소"
+            user-info-uri: "사용자 정보 획득 주소"
+            user-name-attribute: "응답 데이터 변수"
+
 # 서버 포트 설정 (기본 포트 변경 시)
 server:
   port: 8080
