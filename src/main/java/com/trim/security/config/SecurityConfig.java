@@ -1,6 +1,6 @@
 package com.trim.security.config;
 
-import com.trim.global.auth.CustomOAuth2UserService;
+import com.trim.global.auth.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
