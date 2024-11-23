@@ -31,6 +31,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             return null;
         }
 
+        //todo UserDto 구현.. username 값은 어떻게?
+
         return super.loadUser(userRequest);
     }
 }
