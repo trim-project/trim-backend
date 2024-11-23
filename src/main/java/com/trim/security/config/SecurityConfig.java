@@ -1,5 +1,6 @@
 package com.trim.security.config;
 
+import com.trim.global.auth.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,12 +23,13 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    private final CustomOAuth2UserService customOAuth2UserService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         configureCorsAndSecurity(httpSecurity);
         configureAuth(httpSecurity);
-//        configureOAuth2(httpSecurity);        //소셜 로그인 구현 이후 작성
+        configureOAuth2(httpSecurity);
 //        configureExceptionHandling(httpSecurity);     //소셜 로그인 구현 이후 작성
 //        addFilter(httpSecurity);
 
@@ -85,6 +87,7 @@ public class SecurityConfig {
         );
         return requestMatchers.toArray(RequestMatcher[]::new);
     }
+
     private RequestMatcher[] additionalSwaggerRequests() {
         List<RequestMatcher> requestMatchers = List.of(
                 antMatcher("/swagger-ui/**"),
@@ -98,4 +101,12 @@ public class SecurityConfig {
         );
         return requestMatchers.toArray(RequestMatcher[]::new);
     }
+
+    private void configureOAuth2(HttpSecurity httpSecurity) throws Exception{
+        httpSecurity
+                .oauth2Login((oauth2) -> oauth2
+                        .userInfoEndpoint((userInfoEndpointConfig -> userInfoEndpointConfig
+                                .userService(customOAuth2UserService))));
+    }
+
 }
