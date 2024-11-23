@@ -13,7 +13,7 @@ import java.util.*;
 @Entity
 @Getter
 @Builder
-@Table(name = "member")
+@Table(name = "member", indexes = @Index(name = "idx_username", columnList = "username"))
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseTimeEntity implements UserDetails {
@@ -26,7 +26,7 @@ public class Member extends BaseTimeEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-     @Column(unique = true)
+    @Column(nullable = false, unique = true)
     private String username;
 
     private String nickname;
