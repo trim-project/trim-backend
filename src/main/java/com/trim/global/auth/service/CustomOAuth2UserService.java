@@ -1,15 +1,13 @@
 package com.trim.global.auth.service;
 
 import com.trim.domain.member.entity.Member;
-import com.trim.domain.member.repository.MemberRepository;
 import com.trim.domain.member.service.MemberQueryService;
-import com.trim.domain.member.service.MemberQueryServiceImpl;
 import com.trim.global.auth.CustomOAuthUser;
 import com.trim.global.auth.Provider;
-import com.trim.global.auth.dto.GoogleResponse;
-import com.trim.global.auth.dto.KakaoResponse;
-import com.trim.global.auth.dto.NaverResponse;
-import com.trim.global.auth.dto.OAuth2Response;
+import com.trim.global.auth.dto.GoogleUserInfo;
+import com.trim.global.auth.dto.KakaoUserInfo;
+import com.trim.global.auth.dto.NaverUserInfo;
+import com.trim.global.auth.dto.OAuth2UserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -29,23 +27,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
-        Provider provider
 
-        OAuth2Response oAuth2Response = null;
-
-
-        if(registrationId.equals("naver")){
-            oAuth2Response = new NaverResponse(oAuth2User.getAttributes());
-        }
-        else if(registrationId.equals("google")){
-            oAuth2Response = new GoogleResponse(oAuth2User.getAttributes());
-        }
-        else if(registrationId.equals("kakao")){
-            oAuth2Response = new KakaoResponse(oAuth2User.getAttributes());
-        }
-        else{
-            return null;
-        }
+        OAuth2UserInfo oAuth2UserInfo = null;
 
         //todo UserDto 구현.. username 값은 어떻게?
         String username = "random"; //변경 예정
