@@ -4,6 +4,7 @@ import com.trim.domain.member.entity.Member;
 import com.trim.domain.member.entity.SocialType;
 import com.trim.domain.member.service.MemberQueryService;
 import com.trim.global.auth.CustomOAuthUser;
+import com.trim.global.auth.domain.OAuth2Attributes;
 import com.trim.global.auth.dto.OAuth2UserInfo;
 import com.trim.global.auth.utils.OAuth2Utils;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +39,15 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         // 소셜에서 전달받은 정보를 가진 OAuth2User 에서 Map 을 추출하여 OAuth2Attribute 를 생성
         Map<String, Object> attributes = oAuth2User.getAttributes();
 
-        OAuth2UserInfo oAuth2UserInfo = null;
+        // 내부에서 OAuth2UserInfo 생성과 함께 OAuth2Attributes 를 생성해서 반환
+        OAuth2Attributes oauth2Attributes = OAuth2Attributes.of(socialType, userNameAttributeName, attributes);
+
+        OAuth2UserInfo oauth2UserInfo = oauth2Attributes.getOAuth2UserInfo();
+        String socialId = oauth2UserInfo.getSocialId();
+        String email = oauth2UserInfo.getEmail();
+
+        log.info("socialId={}", socialId);
+        log.info("email={}", email);
 
         //todo UserDto 구현.. username 값은 어떻게?
         String username = "random"; //변경 예정
