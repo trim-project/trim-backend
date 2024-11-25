@@ -21,6 +21,8 @@ public class Mission extends BaseTimeEntity {
     @Column(name = "mission_id")
     private Long id;
 
+    private boolean isRewarded;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
