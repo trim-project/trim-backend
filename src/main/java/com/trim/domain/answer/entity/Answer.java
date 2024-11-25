@@ -2,6 +2,7 @@ package com.trim.domain.answer.entity;
 
 import com.trim.domain.auditing.entity.BaseTimeEntity;
 import com.trim.domain.member.entity.Member;
+import com.trim.domain.question.entity.Question;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,7 @@ public class Answer extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "answer_id")
     private Long id;
 
     @Lob
@@ -26,5 +28,7 @@ public class Answer extends BaseTimeEntity {
     @JoinColumn(name = "writer_id")
     private Member writer;
 
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "question_id")
+    private Question question;
 }
