@@ -31,6 +31,10 @@ public class Member extends BaseTimeEntity implements UserDetails {
 
     private String nickname;
 
+    private String email;
+
+    private SocialType socialType;
+
     @OneToMany(mappedBy = "writer")
     private List<Question> questionList = new ArrayList<>();
 
