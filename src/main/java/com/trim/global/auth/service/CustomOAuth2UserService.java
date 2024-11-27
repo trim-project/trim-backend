@@ -60,7 +60,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         //todo UserDto 구현.. username 값은 어떻게? -> registrationId + " " + socialId 고려 중..
         String username = "random"; //변경 예정
-        Optional<Member> targetMember = Optional.ofNullable(memberQueryService.getMemberInfoByUsername(username));
+        Optional<Member> targetMember = memberRepository.findByUsername(username);
         Member member = targetMember.orElseGet(() -> signupSocialMember(username, email, socialType));
 
         return new CustomOAuthUser(member,
