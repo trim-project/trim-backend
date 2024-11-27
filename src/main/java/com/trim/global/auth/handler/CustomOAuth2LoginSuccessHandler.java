@@ -25,7 +25,7 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class CustomOAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
-    private final String REDIRECT_URI = ""; // todo redirect uri 작성
+    private final String REDIRECT_URI = "localhost/"; // todo redirect uri 작성
     private final TokenService tokenService;
 
     @Override
