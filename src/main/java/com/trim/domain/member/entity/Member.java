@@ -14,7 +14,10 @@ import java.util.*;
 @Entity
 @Getter
 @SuperBuilder
-@Table(name = "member", indexes = @Index(name = "idx_username", columnList = "username"))
+@Table(name = "member", indexes = {
+        @Index(name = "idx_username", columnList = "username"),
+        @Index(name = "idx_nickname", columnList = "nickname")
+})
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseTimeEntity implements UserDetails {
@@ -30,6 +33,7 @@ public class Member extends BaseTimeEntity implements UserDetails {
     @Column(nullable = false, unique = true)
     private String username;
 
+    @Column(nullable = false, unique = true)
     private String nickname;
 
     private String email;
@@ -47,13 +51,6 @@ public class Member extends BaseTimeEntity implements UserDetails {
     @Override
     public String getPassword() {
         return null;        //해당 항목 없음
-    }
-
-    @PrePersist
-    public void generateUsername() {
-        if (this.username == null || this.username.isEmpty()) {
-            this.username = UUID.randomUUID().toString();
-        }
     }
 
 //    @OneToMany(mappedBy = "member")
