@@ -13,6 +13,6 @@ public interface BadgeCommandService {
     void removeBadge(Member member, Long badgeId);
 
     //user
-
+    Long completeMission(Member member, Long BadgeId);
 
 }
