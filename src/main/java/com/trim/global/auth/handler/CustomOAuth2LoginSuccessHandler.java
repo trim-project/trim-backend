@@ -34,26 +34,23 @@ public class CustomOAuth2LoginSuccessHandler implements AuthenticationSuccessHan
         log.info("--------------------------- OAuth2LoginSuccessHandler ---------------------------");
         JwtToken jwtToken = tokenService.generateToken(authentication);
         String provider = null;
-//        boolean isGuest = false;
 
         if (authentication instanceof OAuth2AuthenticationToken) {
             OAuth2AuthenticationToken oauth2Token = (OAuth2AuthenticationToken) authentication;
             provider = oauth2Token.getAuthorizedClientRegistrationId();
             Collection<GrantedAuthority> authorities = oauth2Token.getAuthorities();
             authorities.forEach(grantedAuthority -> log.info("role {}", grantedAuthority.getAuthority()));
-//            isGuest = authorities.stream()
-//                    .map(GrantedAuthority::getAuthority)
-//                    .anyMatch(Role.GUEST.getKey()::equals);
         }
 
         //todo cookie refresh token 구현
 
         String url = UriComponentsBuilder.fromHttpUrl(REDIRECT_URI)
-                .queryParam("code", jwtToken.getAccessToken())
+//                .queryParam("code", jwtToken.getAccessToken())
                 .queryParam("provider", provider)
-//                .queryParam("isGuest", isGuest)
                 .build()
                 .toUriString();
+
+        response.addHeader("Authorization", "Bearer " + jwtToken.getAccessToken());
 
         response.sendRedirect(url);
 

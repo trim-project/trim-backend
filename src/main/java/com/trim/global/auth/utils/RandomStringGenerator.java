@@ -1,6 +1,5 @@
 package com.trim.global.auth.utils;
 
-import com.trim.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 
 import java.security.SecureRandom;
