@@ -1,5 +1,6 @@
 package com.trim.security.config;
 
+import com.trim.global.auth.handler.CustomOAuth2LoginSuccessHandler;
 import com.trim.global.auth.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +25,7 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @EnableWebSecurity
 public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomOAuth2LoginSuccessHandler customOAuth2LoginSuccessHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -106,7 +108,10 @@ public class SecurityConfig {
         httpSecurity
                 .oauth2Login((oauth2) -> oauth2
                         .userInfoEndpoint((userInfoEndpointConfig -> userInfoEndpointConfig
-                                .userService(customOAuth2UserService))));
+                                .userService(customOAuth2UserService)))
+                        .successHandler(customOAuth2LoginSuccessHandler)
+//                        .failureHandler(todo)
+                );
     }
 
 }
