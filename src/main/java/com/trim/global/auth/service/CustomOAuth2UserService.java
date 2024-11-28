@@ -29,7 +29,6 @@ import java.util.Optional;
 @Transactional
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
-    private final MemberQueryService memberQueryService;
     private final MemberRepository memberRepository;
 
     @Override
@@ -58,8 +57,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         log.info("socialId={}", socialId);
         log.info("email={}", email);
 
-        //todo UserDto 구현.. username 값은 어떻게? -> registrationId + " " + socialId 고려 중..
-        String username = "random"; //변경 예정
+        String username = registrationId + "_" + socialId;
         Optional<Member> targetMember = memberRepository.findByUsername(username);
         Member member = targetMember.orElseGet(() -> signupSocialMember(username, email, socialType));
 
@@ -70,11 +68,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private Member signupSocialMember(String username, String email, SocialType socialType) {
         // 회원이 아닐 경우 Guest로 가입
+        // todo 가입시 랜덤 닉네임
         Member member = Member.builder()
                 .username(username)
                 .email(email)
                 .socialType(socialType)
-                .role(Role.GUEST)
+                .role(Role.USER)
                 .build();
         return memberRepository.save(member);
     }
