@@ -1,10 +1,8 @@
 package com.trim.global.auth.handler;
 
 import com.trim.domain.member.entity.Role;
-import com.trim.global.auth.domain.CustomOAuthUser;
 import com.trim.security.dto.JwtToken;
 import com.trim.security.service.TokenService;
-import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -36,16 +34,16 @@ public class CustomOAuth2LoginSuccessHandler implements AuthenticationSuccessHan
         log.info("--------------------------- OAuth2LoginSuccessHandler ---------------------------");
         JwtToken jwtToken = tokenService.generateToken(authentication);
         String provider = null;
-        boolean isGuest = false;
+//        boolean isGuest = false;
 
         if (authentication instanceof OAuth2AuthenticationToken) {
             OAuth2AuthenticationToken oauth2Token = (OAuth2AuthenticationToken) authentication;
             provider = oauth2Token.getAuthorizedClientRegistrationId();
             Collection<GrantedAuthority> authorities = oauth2Token.getAuthorities();
             authorities.forEach(grantedAuthority -> log.info("role {}", grantedAuthority.getAuthority()));
-            isGuest = authorities.stream()
-                    .map(GrantedAuthority::getAuthority)
-                    .anyMatch(Role.GUEST.getKey()::equals);
+//            isGuest = authorities.stream()
+//                    .map(GrantedAuthority::getAuthority)
+//                    .anyMatch(Role.GUEST.getKey()::equals);
         }
 
         //todo cookie refresh token 구현
@@ -53,7 +51,7 @@ public class CustomOAuth2LoginSuccessHandler implements AuthenticationSuccessHan
         String url = UriComponentsBuilder.fromHttpUrl(REDIRECT_URI)
                 .queryParam("code", jwtToken.getAccessToken())
                 .queryParam("provider", provider)
-                .queryParam("isGuest", isGuest)
+//                .queryParam("isGuest", isGuest)
                 .build()
                 .toUriString();
 
