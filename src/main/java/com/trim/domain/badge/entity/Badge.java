@@ -25,4 +25,8 @@ public class Badge extends BaseTimeEntity {
     private String content;
 
     private int rewardPoint;
+
+    private Long nextBadgeId;
+
+    private Long prevBadgeId;
 }

@@ -28,6 +28,8 @@ public class Mission extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Todo todo;
 
+    private boolean isRewarded;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "badge_id")
     private Badge badge;
