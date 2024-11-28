@@ -23,7 +23,7 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class CustomOAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
-    private final String REDIRECT_URI = "localhost/"; // todo redirect uri 작성
+    private final String REDIRECT_URI = "http://localhost:8080/"; // todo redirect uri 작성
     private final TokenService tokenService;
 
     @Override
@@ -50,7 +50,8 @@ public class CustomOAuth2LoginSuccessHandler implements AuthenticationSuccessHan
                 .build()
                 .toUriString();
 
-        response.addHeader("Authorization", "Bearer " + jwtToken.getAccessToken());
+        response.addHeader("Authorization",
+                jwtToken.getGrantType() + " " + jwtToken.getAccessToken());
 
         response.sendRedirect(url);
 
