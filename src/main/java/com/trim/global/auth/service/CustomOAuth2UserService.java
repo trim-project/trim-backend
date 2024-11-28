@@ -9,6 +9,7 @@ import com.trim.global.auth.domain.CustomOAuthUser;
 import com.trim.global.auth.domain.OAuth2Attributes;
 import com.trim.global.auth.dto.OAuth2UserInfo;
 import com.trim.global.auth.utils.OAuth2Utils;
+import com.trim.global.auth.utils.RandomStringGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -29,6 +30,10 @@ import java.util.Optional;
 @Transactional
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
+    private final String TEMP_NICKNAME_HEADER = "TRIM_";
+    private final int TEMP_NICKNAME_LENGTH = 10;
+
+    private final NicknameService nicknameService;
     private final MemberRepository memberRepository;
 
     @Override
@@ -67,10 +72,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     private Member signupSocialMember(String username, String email, SocialType socialType) {
-        // 회원이 아닐 경우 Guest로 가입
-        // todo 가입시 랜덤 닉네임
+        String nickname = TEMP_NICKNAME_HEADER +
+                nicknameService.generateUniqueNickname(TEMP_NICKNAME_LENGTH);
+        // todo 닉네임 변경권 1개 지급
+
         Member member = Member.builder()
                 .username(username)
+                .nickname(nickname)
                 .email(email)
                 .socialType(socialType)
                 .role(Role.USER)
