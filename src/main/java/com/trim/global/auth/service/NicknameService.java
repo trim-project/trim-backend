@@ -16,7 +16,7 @@ public class NicknameService {
 
         do {
             nickname = RandomStringGenerator.generateRandomString(length);
-        } while (memberRepository.findByNickname(nickname).isPresent());
+        } while (memberRepository.existsByNickname(nickname));
 
         return nickname;
     }
