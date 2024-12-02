@@ -5,11 +5,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trim.exception.payload.code.ErrorStatus;
 import com.trim.exception.payload.code.Reason;
 import com.trim.exception.payload.dto.ApiResponseDto;
+import com.trim.global.annotation.api.ApiErrorCodeExample;
+import com.trim.global.dto.ExampleHolder;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.examples.Example;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.media.Content;
+import io.swagger.v3.oas.models.media.MediaType;
+import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
@@ -22,6 +27,7 @@ import org.springframework.web.method.HandlerMethod;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.stream.Collectors.groupingBy;
 
