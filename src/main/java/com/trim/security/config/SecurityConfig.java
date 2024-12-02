@@ -67,6 +67,7 @@ public class SecurityConfig {
                                     "/*.ico", "/error", "/images/**").permitAll()
                             .requestMatchers(permitAllRequest()).permitAll()        //비인증 api 허용 처리
                             .requestMatchers(authRelatedEndpoints()).permitAll()
+                            .requestMatchers(additionalSwaggerRequests()).permitAll()
                             .anyRequest().permitAll();      //지정하지 않은 url의 경우 인증 처리
                 });
     }
@@ -81,6 +82,19 @@ public class SecurityConfig {
     private RequestMatcher[] authRelatedEndpoints() {
         List<RequestMatcher> requestMatchers = List.of(
                 antMatcher("/api/tokens/**")
+        );
+        return requestMatchers.toArray(RequestMatcher[]::new);
+    }
+    private RequestMatcher[] additionalSwaggerRequests() {
+        List<RequestMatcher> requestMatchers = List.of(
+                antMatcher("/swagger-ui/**"),
+                antMatcher("/swagger-ui"),
+                antMatcher("/swagger-ui.html"),
+                antMatcher("/swagger/**"),
+                antMatcher("/swagger-resources/**"),
+                antMatcher("/v3/api-docs/**"),
+                antMatcher("/profile")
+
         );
         return requestMatchers.toArray(RequestMatcher[]::new);
     }
