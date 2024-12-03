@@ -1,5 +1,6 @@
 package com.trim.domain.member.controller;
 
+import com.trim.domain.member.dto.MemberResponse;
 import com.trim.domain.member.entity.Member;
 import com.trim.exception.payload.dto.ApiResponseDto;
 import com.trim.security.aop.CurrentUser;
@@ -19,7 +20,14 @@ public class MemberController {
      */
     @GetMapping("/info")
     public ApiResponseDto<?> currentUserInfo(@CurrentUser Member member){
-        return ApiResponseDto.onSuccess(member);
+        MemberResponse dto = MemberResponse.builder()
+                .id(member.getId())
+                .username(member.getUsername())
+                .nickname(member.getNickname())
+                .email(member.getEmail())
+                .nicknameChangeChance(member.getNicknameChangeChance())
+                .build();
+        return ApiResponseDto.onSuccess(dto);
     }
 
 
