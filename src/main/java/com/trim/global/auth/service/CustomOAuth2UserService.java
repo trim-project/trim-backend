@@ -77,6 +77,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         Member member = Member.builder()
                 .username(username)
                 .nickname(nickname)
+                .nicknameChangeChance(1)
                 .email(email)
                 .socialType(socialType)
                 .role(Role.USER)

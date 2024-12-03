@@ -40,6 +40,9 @@ public class Member extends BaseTimeEntity implements UserDetails {
 
     private SocialType socialType;
 
+    // 변경될 수 있음
+    private int nicknameChangeChance;
+
     @OneToMany(mappedBy = "writer")
     private List<Question> questionList = new ArrayList<>();
 
