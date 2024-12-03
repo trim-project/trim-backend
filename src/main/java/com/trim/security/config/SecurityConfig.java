@@ -1,7 +1,10 @@
 package com.trim.security.config;
 
+import com.trim.global.auth.handler.CustomOAuth2LoginFailureHandler;
 import com.trim.global.auth.handler.CustomOAuth2LoginSuccessHandler;
 import com.trim.global.auth.service.CustomOAuth2UserService;
+import com.trim.security.filter.JwtAuthenticationFilter;
+import com.trim.security.filter.JwtExceptionFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +17,7 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import java.util.List;
@@ -26,6 +30,10 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomOAuth2LoginSuccessHandler customOAuth2LoginSuccessHandler;
+    private final CustomOAuth2LoginFailureHandler customOAuth2LoginFailureHandler;
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtExceptionFilter jwtExceptionFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -33,7 +41,7 @@ public class SecurityConfig {
         configureAuth(httpSecurity);
         configureOAuth2(httpSecurity);
 //        configureExceptionHandling(httpSecurity);     //소셜 로그인 구현 이후 작성
-//        addFilter(httpSecurity);
+        addFilter(httpSecurity);
 
         return httpSecurity.build();
     }
@@ -110,8 +118,14 @@ public class SecurityConfig {
                         .userInfoEndpoint((userInfoEndpointConfig -> userInfoEndpointConfig
                                 .userService(customOAuth2UserService)))
                         .successHandler(customOAuth2LoginSuccessHandler)
-//                        .failureHandler(todo)
+                        .failureHandler(customOAuth2LoginFailureHandler)
                 );
+    }
+
+    private void addFilter(HttpSecurity httpSecurity){
+        httpSecurity
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
     }
 
 }
