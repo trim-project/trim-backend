@@ -34,6 +34,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath nickname = createString("nickname");
 
+    public final NumberPath<Integer> nicknameChangeChance = createNumber("nicknameChangeChance", Integer.class);
+
     public final ListPath<com.trim.domain.question.entity.Question, com.trim.domain.question.entity.QQuestion> questionList = this.<com.trim.domain.question.entity.Question, com.trim.domain.question.entity.QQuestion>createList("questionList", com.trim.domain.question.entity.Question.class, com.trim.domain.question.entity.QQuestion.class, PathInits.DIRECT2);
 
     public final EnumPath<Role> role = createEnum("role", Role.class);

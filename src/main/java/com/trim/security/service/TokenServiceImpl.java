@@ -18,6 +18,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
@@ -33,18 +34,22 @@ public class TokenServiceImpl implements TokenService{
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final RedisService redisService;
     private final MemberQueryService memberQueryService;
+    private final UserDetailsService userDetailsService;
+
     private final static int ACCESS_TOKEN_EXPIRATION_TIME = 1800000;
     private final static int REFRESH_TOKEN_EXPIRATION_TIME = 604800000;
 
     public TokenServiceImpl(@Value("${app.jwt.secret}") String key,
                             AuthenticationManagerBuilder authenticationManagerBuilder,
                             RedisService redisService,
-                            MemberQueryService memberQueryService) {
+                            MemberQueryService memberQueryService,
+                            UserDetailsService userDetailsService) {
         byte[] keyBytes = Decoders.BASE64.decode(key);
         this.key = Keys.hmacShaKeyFor(keyBytes);
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.redisService = redisService;
         this.memberQueryService = memberQueryService;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -132,7 +137,8 @@ public class TokenServiceImpl implements TokenService{
 
         // UserDetails 객체를 만들어서 Authentication return
         // UserDetails: interface, User: UserDetails를 구현한 class
-        UserDetails principal = new User(claims.getSubject(), "", authorities);
+//        UserDetails principal = new User(claims.getSubject(), "", authorities);
+        UserDetails principal = userDetailsService.loadUserByUsername(claims.getSubject());
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 
