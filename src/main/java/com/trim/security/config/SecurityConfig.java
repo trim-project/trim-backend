@@ -3,6 +3,8 @@ package com.trim.security.config;
 import com.trim.global.auth.handler.CustomOAuth2LoginFailureHandler;
 import com.trim.global.auth.handler.CustomOAuth2LoginSuccessHandler;
 import com.trim.global.auth.service.CustomOAuth2UserService;
+import com.trim.security.exception.JwtAccessDeniedHandler;
+import com.trim.security.exception.JwtAuthenticationEntryPoint;
 import com.trim.security.filter.JwtAuthenticationFilter;
 import com.trim.security.filter.JwtExceptionFilter;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +34,9 @@ public class SecurityConfig {
     private final CustomOAuth2LoginSuccessHandler customOAuth2LoginSuccessHandler;
     private final CustomOAuth2LoginFailureHandler customOAuth2LoginFailureHandler;
 
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtExceptionFilter jwtExceptionFilter;
 
@@ -40,10 +45,17 @@ public class SecurityConfig {
         configureCorsAndSecurity(httpSecurity);
         configureAuth(httpSecurity);
         configureOAuth2(httpSecurity);
-//        configureExceptionHandling(httpSecurity);     //소셜 로그인 구현 이후 작성
+        configureExceptionHandling(httpSecurity);     //소셜 로그인 구현 이후 작성
         addFilter(httpSecurity);
 
         return httpSecurity.build();
+    }
+
+    private void configureExceptionHandling(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity
+                .exceptionHandling(httpSecurityExceptionHandlingConfigurer -> httpSecurityExceptionHandlingConfigurer
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                        .accessDeniedHandler(jwtAccessDeniedHandler));
     }
 
 
@@ -117,8 +129,8 @@ public class SecurityConfig {
                 .oauth2Login((oauth2) -> oauth2
                         .userInfoEndpoint((userInfoEndpointConfig -> userInfoEndpointConfig
                                 .userService(customOAuth2UserService)))
-                        .successHandler(customOAuth2LoginSuccessHandler)
-                        .failureHandler(customOAuth2LoginFailureHandler)
+                        .successHandler(customOAuth2LoginSuccessHandler::onAuthenticationSuccess)
+                        .failureHandler(customOAuth2LoginFailureHandler::onAuthenticationFailure)
                 );
     }
 
