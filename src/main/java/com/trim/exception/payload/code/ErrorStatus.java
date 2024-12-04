@@ -23,9 +23,12 @@ public enum ErrorStatus implements BaseCode{
     AUTH_TOKEN_HAS_EXPIRED(UNAUTHORIZED, 4052, "토큰의 유효기간이 만료되었습니다"),
     AUTH_TOKEN_IS_UNSUPPORTED(UNAUTHORIZED,4053, "토큰 형식이 jwt와는 다른 형식입니다."),
     AUTH_IS_NULL(UNAUTHORIZED, 4054, "토큰이 null입니다"),
+    AUTH_MUST_AUTHORIZED_URI(BAD_REQUEST, 4055, "인증이 필수인 uri입니다."),
+    AUTH_ROLE_CANNOT_EXECUTE_URI(BAD_REQUEST,4056, "해당 인가로는 실행할 수 없는 동작입니다."),
 
     //member error(4100 ~ 4149)
     MEMBER_NOT_FOUND(NOT_FOUND, 4100,"찾을 수 없는 유저 정보입니다.");
+
 
 
     private final HttpStatus httpStatus;
