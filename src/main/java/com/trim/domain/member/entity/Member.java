@@ -14,7 +14,12 @@ import java.util.*;
 @Entity
 @Getter
 @SuperBuilder
-@Table(name = "member")
+
+@Table(name = "member", indexes = {
+        @Index(name = "idx_username", columnList = "username"),
+        @Index(name = "idx_nickname", columnList = "nickname")
+})
+
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseTimeEntity implements UserDetails {
@@ -27,10 +32,19 @@ public class Member extends BaseTimeEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-     @Column(unique = true)
+    @Column(nullable = false, unique = true)
     private String username;
 
+    @Column(nullable = false, unique = true)
     private String nickname;
+
+    private String email;
+
+    @Enumerated(EnumType.STRING)
+    private SocialType socialType;
+
+    // 변경될 수 있음
+    private int nicknameChangeChance;
 
     @OneToMany(mappedBy = "writer")
     private List<Question> questionList = new ArrayList<>();
@@ -43,13 +57,6 @@ public class Member extends BaseTimeEntity implements UserDetails {
     @Override
     public String getPassword() {
         return null;        //해당 항목 없음
-    }
-
-    @PrePersist
-    public void generateUsername() {
-        if (this.username == null || this.username.isEmpty()) {
-            this.username = UUID.randomUUID().toString();
-        }
     }
 
 //    @OneToMany(mappedBy = "member")

@@ -1,5 +1,12 @@
 package com.trim.security.config;
 
+import com.trim.global.auth.handler.CustomOAuth2LoginFailureHandler;
+import com.trim.global.auth.handler.CustomOAuth2LoginSuccessHandler;
+import com.trim.global.auth.service.CustomOAuth2UserService;
+import com.trim.security.exception.JwtAccessDeniedHandler;
+import com.trim.security.exception.JwtAuthenticationEntryPoint;
+import com.trim.security.filter.JwtAuthenticationFilter;
+import com.trim.security.filter.JwtExceptionFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +19,7 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import java.util.List;
@@ -22,16 +30,32 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomOAuth2LoginSuccessHandler customOAuth2LoginSuccessHandler;
+    private final CustomOAuth2LoginFailureHandler customOAuth2LoginFailureHandler;
+
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtExceptionFilter jwtExceptionFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         configureCorsAndSecurity(httpSecurity);
         configureAuth(httpSecurity);
-//        configureOAuth2(httpSecurity);        //소셜 로그인 구현 이후 작성
-//        configureExceptionHandling(httpSecurity);     //소셜 로그인 구현 이후 작성
-//        addFilter(httpSecurity);
+        configureOAuth2(httpSecurity);
+        configureExceptionHandling(httpSecurity);     //소셜 로그인 구현 이후 작성
+        addFilter(httpSecurity);
 
         return httpSecurity.build();
+    }
+
+    private void configureExceptionHandling(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity
+                .exceptionHandling(httpSecurityExceptionHandlingConfigurer -> httpSecurityExceptionHandlingConfigurer
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                        .accessDeniedHandler(jwtAccessDeniedHandler));
     }
 
 
@@ -85,6 +109,25 @@ public class SecurityConfig {
         );
         return requestMatchers.toArray(RequestMatcher[]::new);
     }
+
+
+    private void configureOAuth2(HttpSecurity httpSecurity) throws Exception{
+        httpSecurity
+                .oauth2Login((oauth2) -> oauth2
+                        .userInfoEndpoint((userInfoEndpointConfig -> userInfoEndpointConfig
+                                .userService(customOAuth2UserService)))
+                        .successHandler(customOAuth2LoginSuccessHandler::onAuthenticationSuccess)
+                        .failureHandler(customOAuth2LoginFailureHandler::onAuthenticationFailure)
+                );
+    }
+
+    private void addFilter(HttpSecurity httpSecurity){
+        httpSecurity
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
+    }
+
+
     private RequestMatcher[] additionalSwaggerRequests() {
         List<RequestMatcher> requestMatchers = List.of(
                 antMatcher("/swagger-ui/**"),
@@ -98,4 +141,5 @@ public class SecurityConfig {
         );
         return requestMatchers.toArray(RequestMatcher[]::new);
     }
+
 }
