@@ -38,6 +38,7 @@ public class Member extends BaseTimeEntity implements UserDetails {
 
     private String email;
 
+    @Enumerated(EnumType.STRING)
     private SocialType socialType;
 
     // 변경될 수 있음
