@@ -14,10 +14,12 @@ import java.util.*;
 @Entity
 @Getter
 @SuperBuilder
+
 @Table(name = "member", indexes = {
         @Index(name = "idx_username", columnList = "username"),
         @Index(name = "idx_nickname", columnList = "nickname")
 })
+
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseTimeEntity implements UserDetails {

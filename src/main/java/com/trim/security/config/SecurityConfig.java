@@ -91,6 +91,7 @@ public class SecurityConfig {
                                     "/*.ico", "/error", "/images/**").permitAll()
                             .requestMatchers(permitAllRequest()).permitAll()        //비인증 api 허용 처리
                             .requestMatchers(authRelatedEndpoints()).permitAll()
+                            .requestMatchers(additionalSwaggerRequests()).permitAll()
                             .anyRequest().permitAll();      //지정하지 않은 url의 경우 인증 처리
                 });
     }
@@ -109,6 +110,7 @@ public class SecurityConfig {
         return requestMatchers.toArray(RequestMatcher[]::new);
     }
 
+
     private void configureOAuth2(HttpSecurity httpSecurity) throws Exception{
         httpSecurity
                 .oauth2Login((oauth2) -> oauth2
@@ -123,6 +125,21 @@ public class SecurityConfig {
         httpSecurity
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
+    }
+
+
+    private RequestMatcher[] additionalSwaggerRequests() {
+        List<RequestMatcher> requestMatchers = List.of(
+                antMatcher("/swagger-ui/**"),
+                antMatcher("/swagger-ui"),
+                antMatcher("/swagger-ui.html"),
+                antMatcher("/swagger/**"),
+                antMatcher("/swagger-resources/**"),
+                antMatcher("/v3/api-docs/**"),
+                antMatcher("/profile")
+
+        );
+        return requestMatchers.toArray(RequestMatcher[]::new);
     }
 
 }
