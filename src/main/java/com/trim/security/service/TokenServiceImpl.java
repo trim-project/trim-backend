@@ -4,6 +4,7 @@ import com.trim.domain.member.entity.Member;
 import com.trim.domain.member.service.MemberQueryService;
 import com.trim.exception.object.general.GeneralException;
 import com.trim.exception.payload.code.ErrorStatus;
+import com.trim.exception.payload.exception.security.JwtAuthenticationException;
 import com.trim.infra.service.RedisService;
 import com.trim.security.dto.JwtToken;
 import io.jsonwebtoken.*;
@@ -16,7 +17,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,8 @@ public class TokenServiceImpl implements TokenService{
     private final UserDetailsService userDetailsService;
 
     private final static int ACCESS_TOKEN_EXPIRATION_TIME = 1800000;
+//    테스트 용
+//    private final static int ACCESS_TOKEN_EXPIRATION_TIME = 18;
     private final static int REFRESH_TOKEN_EXPIRATION_TIME = 604800000;
 
     public TokenServiceImpl(@Value("${app.jwt.secret}") String key,
@@ -135,9 +138,6 @@ public class TokenServiceImpl implements TokenService{
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
-        // UserDetails 객체를 만들어서 Authentication return
-        // UserDetails: interface, User: UserDetails를 구현한 class
-//        UserDetails principal = new User(claims.getSubject(), "", authorities);
         UserDetails principal = userDetailsService.loadUserByUsername(claims.getSubject());
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
@@ -150,19 +150,18 @@ public class TokenServiceImpl implements TokenService{
                     .build()
                     .parseClaimsJws(token);
             return true;
-            //TODO GeneralException -> filter에서만 사용되는 exception으로 교체(현재는 서블렛단에서 처리되는 exception)
         } catch (SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT Token", e);
-            throw new GeneralException(ErrorStatus.AUTH_INVALID_TOKEN);
+            throw new JwtAuthenticationException(ErrorStatus.AUTH_INVALID_TOKEN);
         } catch (ExpiredJwtException e) {
             log.info("Expired JWT Token", e);
-            throw new GeneralException(ErrorStatus.AUTH_TOKEN_HAS_EXPIRED);
+            throw new JwtAuthenticationException(ErrorStatus.AUTH_TOKEN_HAS_EXPIRED);
         } catch (UnsupportedJwtException e) {
             log.info("Unsupported JWT Token", e);
-            throw new GeneralException(ErrorStatus.AUTH_TOKEN_IS_UNSUPPORTED);
+            throw new JwtAuthenticationException(ErrorStatus.AUTH_TOKEN_IS_UNSUPPORTED);
         } catch (IllegalArgumentException e) {
             log.info("JWT claims string is empty.", e);
-            throw new GeneralException(ErrorStatus.AUTH_IS_NULL);
+            throw new JwtAuthenticationException(ErrorStatus.AUTH_IS_NULL);
         }
     }
 
