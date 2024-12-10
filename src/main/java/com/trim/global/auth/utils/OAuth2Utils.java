@@ -10,6 +10,8 @@ import java.util.Map;
 
 public class OAuth2Utils {
 
+    private static final String USERNAME_DELIMITER = "_";
+
     // registrationId에 따른 Provider 추출
     public static SocialType getSocialType(String registrationId){
 
@@ -34,5 +36,9 @@ public class OAuth2Utils {
                 return new KakaoUserInfo(attributes);
         }
         return null;
+    }
+
+    public static String generateUsername(String registrationId, String socialId){
+        return registrationId + USERNAME_DELIMITER + socialId;
     }
 }
