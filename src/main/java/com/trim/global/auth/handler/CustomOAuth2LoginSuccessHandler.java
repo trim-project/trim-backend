@@ -1,6 +1,7 @@
 package com.trim.global.auth.handler;
 
-import com.trim.domain.member.entity.Role;
+import com.trim.exception.payload.code.ErrorStatus;
+import com.trim.exception.payload.exception.security.JwtAuthenticationException;
 import com.trim.security.dto.JwtToken;
 import com.trim.security.service.TokenService;
 import jakarta.servlet.ServletException;
@@ -33,19 +34,17 @@ public class CustomOAuth2LoginSuccessHandler implements AuthenticationSuccessHan
         }
         log.info("--------------------------- OAuth2LoginSuccessHandler ---------------------------");
         JwtToken jwtToken = tokenService.generateToken(authentication);
-        String provider = null;
+        
+        // 인증 객체 검증
+        validateOAuth2Authentication(authentication);
 
-        if (authentication instanceof OAuth2AuthenticationToken) {
-            OAuth2AuthenticationToken oauth2Token = (OAuth2AuthenticationToken) authentication;
-            provider = oauth2Token.getAuthorizedClientRegistrationId();
-            Collection<GrantedAuthority> authorities = oauth2Token.getAuthorities();
-            authorities.forEach(grantedAuthority -> log.info("role {}", grantedAuthority.getAuthority()));
-        }
+        OAuth2AuthenticationToken oauth2Token = (OAuth2AuthenticationToken) authentication;
+        String provider = oauth2Token.getAuthorizedClientRegistrationId();
+        Collection<GrantedAuthority> authorities = oauth2Token.getAuthorities();
+        authorities.forEach(grantedAuthority -> log.info("role {}", grantedAuthority.getAuthority()));
 
-        //todo cookie refresh token 구현
 
         String url = UriComponentsBuilder.fromHttpUrl(REDIRECT_URI)
-//                .queryParam("code", jwtToken.getAccessToken())
                 .queryParam("provider", provider)
                 .build()
                 .toUriString();
@@ -55,5 +54,11 @@ public class CustomOAuth2LoginSuccessHandler implements AuthenticationSuccessHan
 
         response.sendRedirect(url);
 
+    }
+    private void validateOAuth2Authentication(Authentication authentication) {
+        if (!(authentication instanceof OAuth2AuthenticationToken)){
+            log.info("Invalid Authentication.");
+            throw new JwtAuthenticationException(ErrorStatus.AUTH_INVALID_AUTHENTICATION);
+        }
     }
 }

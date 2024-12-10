@@ -25,6 +25,7 @@ public enum ErrorStatus implements BaseCode{
     AUTH_IS_NULL(UNAUTHORIZED, 4054, "토큰이 null입니다"),
     AUTH_MUST_AUTHORIZED_URI(BAD_REQUEST, 4055, "인증이 필수인 uri입니다."),
     AUTH_ROLE_CANNOT_EXECUTE_URI(BAD_REQUEST,4056, "해당 인가로는 실행할 수 없는 동작입니다."),
+    AUTH_INVALID_AUTHENTICATION(UNAUTHORIZED, 4057, "유효하지 않은 인증 객체입니다.");
 
     //member error(4100 ~ 4149)
     MEMBER_NOT_FOUND(NOT_FOUND, 4100,"찾을 수 없는 유저 정보입니다.");
