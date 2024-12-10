@@ -13,14 +13,13 @@ public class OAuth2Utils {
     // registrationId에 따른 Provider 추출
     public static SocialType getSocialType(String registrationId){
 
-        if(registrationId.equals("naver")){
-            return SocialType.NAVER;
-        }
-        else if(registrationId.equals("google")){
-            return SocialType.GOOGLE;
-        }
-        else if(registrationId.equals("kakao")){
-            return SocialType.KAKAO;
+        switch (registrationId){
+            case "naver":
+                return SocialType.NAVER;
+            case "google":
+                return SocialType.GOOGLE;
+            case "kakao":
+                return SocialType.KAKAO;
         }
         return null;
     }
